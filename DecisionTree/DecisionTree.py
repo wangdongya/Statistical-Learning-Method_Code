@@ -128,12 +128,8 @@ def calcBestFeature(trainDataList, trainLabelList):
     :return: 信息增益最大的特征及最大信息增益值
     '''
     #将数据集和标签集转换为数组形式
-    #trainLabelArr转换后需要转置，这样在取数时方便
-    #例如a = np.array([1, 2, 3]); b = np.array([1, 2, 3]).T
-    #若不转置，a[0] = [1, 2, 3]，转置后b[0] = 1, b[1] = 2
-    #对于标签集来说，能够很方便地取到每一位是很重要的
     trainDataArr = np.array(trainDataList)
-    trainLabelArr = np.array(trainLabelList).T
+    trainLabelArr = np.array(trainLabelList)
 
     #获取当前特征数目，也就是数据集的横轴大小
     featureNum = trainDataArr.shape[1]
@@ -142,11 +138,12 @@ def calcBestFeature(trainDataList, trainLabelList):
     maxG_D_A = -1
     #初始化最大信息增益的特征
     maxFeature = -1
+    
+    #“5.2.2 信息增益”中“算法5.1（信息增益的算法）”第一步：
+    #1.计算数据集D的经验熵H(D)
+    H_D = calc_H_D(trainLabelArr)
     #对每一个特征进行遍历计算
     for feature in range(featureNum):
-        #“5.2.2 信息增益”中“算法5.1（信息增益的算法）”第一步：
-        #1.计算数据集D的经验熵H(D)
-        H_D = calc_H_D(trainLabelArr)
         #2.计算条件经验熵H(D|A)
         #由于条件经验熵的计算过程中只涉及到标签以及当前特征，为了提高运算速度（全部样本
         #做成的矩阵运算速度太慢，需要剔除不需要的部分），将数据集矩阵进行切割
